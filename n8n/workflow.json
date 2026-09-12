@@ -3,7 +3,7 @@
   "nodes": [
     {
       "parameters": {
-        "content": "## SBB Solution 07: Native macOS & iOS SwiftUI Suite\n**Domain**: Apple Ecosystem & Mobile\n\n### Discrete Micro-Functions:\n- **FEAT-007-01**: SwiftUI Component Library ()\n- **FEAT-007-02**: CoreData / SwiftData Sync Layer ()\n- **FEAT-007-03**: macOS Menu Bar Daemon ()\n- **FEAT-007-04**: Combine Reactive Event Stream Bus ()\n- **FEAT-007-05**: Apple Push Notification (APNs) Dispatcher ()",
+        "content": "## SBB Solution 07: Native macOS & iOS SwiftUI Suite\n**Domain**: Apple Ecosystem & Mobile\n\n### Discrete Micro-Functions:\n- **FEAT-007-01**: SwiftUI Component Library (`POST /api/v1/swiftui/render`)\n- **FEAT-007-02**: CoreData / SwiftData Sync Layer (`POST /api/v1/swiftdata/sync`)\n- **FEAT-007-03**: macOS Menu Bar Daemon (`POST /api/v1/menubar/status`)\n- **FEAT-007-04**: Combine Reactive Event Stream Bus (`POST /api/v1/combine/publish`)\n- **FEAT-007-05**: Apple Push Notification (APNs) Dispatcher (`POST /api/v1/apns/dispatch`)",
         "height": 220,
         "width": 640,
         "color": 2
@@ -19,7 +19,7 @@
     },
     {
       "parameters": {
-        "content": "## Platform Variables Matrix ()\n- : \n- : \n- Error Workflow DLQ: ",
+        "content": "## Platform Variables Matrix\n- `SBB_APPLE_SUITE_URL`: `{{$vars.SBB_APPLE_SUITE_URL || 'http://127.0.0.1:8767'}}`\n- `SBB_VAULT_BRIDGE_URL`: `{{$vars.SBB_VAULT_BRIDGE_URL || 'http://127.0.0.1:8766'}}`\n- Error Workflow DLQ: `e7rR9pL2Km5Vx0Q3`",
         "height": 160,
         "width": 480,
         "color": 5

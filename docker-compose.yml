@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  apple-suite:
+    build: .
+    container_name: sovereign-apple-suite
+    ports:
+      - "8767:8767"
+    environment:
+      - APPLE_SUITE_HOST=0.0.0.0
+      - APPLE_SUITE_PORT=8767
+      - APNS_BUNDLE_ID=io.sovereignbizbox.companion
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
