@@ -1,0 +1,174 @@
+{
+  "name": "SBB Solution 07: Native macOS & iOS SwiftUI Offline-First Architecture Suite",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## SBB Solution 07: Native macOS & iOS SwiftUI Suite\n**Domain**: Apple Ecosystem & Mobile\n\n### Discrete Micro-Functions:\n- **FEAT-007-01**: SwiftUI Component Library ()\n- **FEAT-007-02**: CoreData / SwiftData Sync Layer ()\n- **FEAT-007-03**: macOS Menu Bar Daemon ()\n- **FEAT-007-04**: Combine Reactive Event Stream Bus ()\n- **FEAT-007-05**: Apple Push Notification (APNs) Dispatcher ()",
+        "height": 220,
+        "width": 640,
+        "color": 2
+      },
+      "id": "sticky-apple-overview",
+      "name": "Apple Suite Overview Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        200,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Platform Variables Matrix ()\n- : \n- : \n- Error Workflow DLQ: ",
+        "height": 160,
+        "width": 480,
+        "color": 5
+      },
+      "id": "sticky-apple-vars",
+      "name": "Variables Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        880,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "apple",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "apple-webhook-trigger",
+      "name": "Apple Inbound Gateway",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [
+        200,
+        300
+      ],
+      "webhookId": "sbb-apple-gateway"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ ( && .SBB_APPLE_SERVICE_URL ? .SBB_APPLE_SERVICE_URL : \"http://127.0.0.1:8767\") + \"/api/v1/apns/dispatch\" }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({\"device_token\": .body.device_token || \"simulated_apple_token\", \"title\": .body.title || \"SBB Platform Alert\", \"body\": .body.message || \"Event processed successfully\", \"badge\": 1, \"sound\": \"default\"}) }}",
+        "options": {}
+      },
+      "id": "apple-node-apns-dispatch",
+      "name": "Dispatch APNs Notification",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        440,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ ( && .SBB_APPLE_SERVICE_URL ? .SBB_APPLE_SERVICE_URL : \"http://127.0.0.1:8767\") + \"/api/v1/swiftdata/sync\" }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({\"client_sync_token\": \"SYNC-\" + Date.now(), \"records\": []}) }}",
+        "options": {}
+      },
+      "id": "apple-node-swiftdata-sync",
+      "name": "Synchronize SwiftData Delta",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        680,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ ( && .SBB_VAULT_BRIDGE_URL ? .SBB_VAULT_BRIDGE_URL : \"http://127.0.0.1:8766\") + \"/api/webhook/audit\" }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({\"event_name\": \"apple_ecosystem_sync\", \"source\": \"sbb-solution-07\", \"details\": }) }}",
+        "options": {}
+      },
+      "id": "apple-node-vault-audit",
+      "name": "Persist to Vault Ledger",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        920,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ \"success\": true, \"apple_sync_response\":  }) }}",
+        "options": {}
+      },
+      "id": "apple-respond-node",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        1160,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Apple Inbound Gateway": {
+      "main": [
+        [
+          {
+            "node": "Dispatch APNs Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Dispatch APNs Notification": {
+      "main": [
+        [
+          {
+            "node": "Synchronize SwiftData Delta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Synchronize SwiftData Delta": {
+      "main": [
+        [
+          {
+            "node": "Persist to Vault Ledger",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Persist to Vault Ledger": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "e7rR9pL2Km5Vx0Q3"
+  }
+}

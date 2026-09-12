@@ -1,0 +1,15 @@
+{
+  "id": "sol-sol-007-swift-apple-ecosystem-suite",
+  "slug": "swift-apple-ecosystem-suite",
+  "name": "Native macOS & iOS SwiftUI Offline-First Architecture Suite",
+  "domain": "Apple Ecosystem & Mobile",
+  "version": "1.0.0",
+  "port": 8767,
+  "features": [
+    {"id": "FEAT-007-01", "name": "SwiftUI Reusable Component Library", "endpoint": "/api/v1/swiftui/render"},
+    {"id": "FEAT-007-02", "name": "CoreData / SwiftData Offline-First Sync Layer", "endpoint": "/api/v1/swiftdata/sync"},
+    {"id": "FEAT-007-03", "name": "macOS Menu Bar Daemon & Background Worker", "endpoint": "/api/v1/menubar/status"},
+    {"id": "FEAT-007-04", "name": "Combine Reactive Event Stream Bus", "endpoint": "/api/v1/combine/publish"},
+    {"id": "FEAT-007-05", "name": "Apple Push Notification (APNs) Dispatcher", "endpoint": "/api/v1/apns/dispatch"}
+  ]
+}
