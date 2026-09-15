@@ -33,6 +33,14 @@ def main():
     evt_p.add_argument("--type", type=str, required=True, help="Event type")
     evt_p.add_argument("--data", type=str, default="{}", help="Event data JSON")
 
+    # FEAT-007-01: SwiftUI Component Library
+    swiftui_p = subparsers.add_parser("render-swiftui", help="FEAT-007-01: Render a SwiftUI reusable component")
+    swiftui_p.add_argument("--view-type", type=str, default="MetricCard",
+                           help="View type: MetricCard, NavigationLink, TabView, ListRow, AlertBanner, ProgressRing, ActionButton, ChartCard")
+    swiftui_p.add_argument("--props", type=str, default="{}", help="JSON props: title, metric, accent_color, subtitle, action_label")
+
+    subparsers.add_parser("list-swiftui-views", help="FEAT-007-01: List all supported SwiftUI component types")
+
     args = parser.parse_args()
     engine = CoreEngine()
 
@@ -50,6 +58,13 @@ def main():
     elif args.command == "publish-event":
         data = json.loads(args.data)
         res = engine.combine.publish_event(args.type, data)
+        print(json.dumps(res, indent=2))
+    elif args.command == "render-swiftui":
+        props = json.loads(args.props)
+        res = engine.swiftui.render_view(args.view_type, props)
+        print(json.dumps(res, indent=2))
+    elif args.command == "list-swiftui-views":
+        res = engine.swiftui.list_supported_views()
         print(json.dumps(res, indent=2))
 
 if __name__ == "__main__":

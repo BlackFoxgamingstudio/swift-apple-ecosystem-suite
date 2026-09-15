@@ -197,6 +197,13 @@ class AppleHandler(BaseHTTPRequestHandler):
         except Exception:
             data = {}
 
+        # Universal Action Gateway for n8n custom node
+        if self.path in ("/api/v1/execute", "/"):
+            action = data.get("action", "render_swiftui_views")
+            payload = data.get("payload", {})
+            self._send_json(200, engine.execute_action(action, payload))
+            return
+
         if self.path == "/api/v1/apns/dispatch":
             dev = data.get("device_token", "default_device")
             title = data.get("title", "SBB Notification")

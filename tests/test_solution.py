@@ -50,6 +50,28 @@ class TestAppleSuiteSolution(unittest.TestCase):
         res = renderer.render_view("MetricCard", {"title": "CPU Temperature", "metric": "42.5°C"})
         self.assertTrue(res["success"])
         self.assertIn("import SwiftUI", res["swift_code"])
+        self.assertIn("idempotency_token", res)
+        self.assertIn("SWUI-", res["idempotency_token"])
+        self.assertIn("iOS 16+", res["platform_support"])
+        self.assertGreater(res["lines_of_code"], 5)
+
+    def test_swiftui_all_view_types(self):
+        """FEAT-007-01: Verify all 10 supported SwiftUI view types render without error."""
+        from src.swiftui_components import SUPPORTED_VIEW_TYPES
+        renderer = SwiftUIComponentRenderer()
+        props = {"title": "Test", "metric": "0.75", "accent_color": "green", "subtitle": "Sub"}
+        for view_type in SUPPORTED_VIEW_TYPES:
+            res = renderer.render_view(view_type, props)
+            self.assertTrue(res["success"], f"Failed for view_type={view_type}")
+            self.assertIn("import SwiftUI", res["swift_code"])
+            self.assertEqual(res["view_type"], view_type)
+
+    def test_swiftui_list_supported_views(self):
+        renderer = SwiftUIComponentRenderer()
+        res = renderer.list_supported_views()
+        self.assertTrue(res["success"])
+        self.assertGreaterEqual(res["count"], 10)
+        self.assertIn("MetricCard", res["supported_view_types"])
 
     def test_core_apple_health(self):
         engine = CoreEngine()
